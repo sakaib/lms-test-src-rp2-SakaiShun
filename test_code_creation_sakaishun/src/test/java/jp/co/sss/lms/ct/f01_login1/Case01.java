@@ -1,9 +1,14 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -64,14 +74,20 @@ public class Case01 {
 	@InjectMocks
 	private LoginController loginController;
 
+	private WebDriver driver;
+
 	@BeforeEach
 	public void setup() {
 		mockMvc = MockMvcBuilders.standaloneSetup(loginController).build();
+		ChromeOptions options = new ChromeOptions();
+		driver = new ChromeDriver(options);
 	}
 
 	@AfterEach
 	public void tearDown() {
-
+		if (driver != null) {
+			driver.quit();
+		}
 	}
 
 	@Test
@@ -98,6 +114,16 @@ public class Case01 {
 			}.getClass().getEnclosingMethod().getName());
 		}
 
+	}
+
+	@Test
+	@Order(2)
+	@DisplayName("Case01_01_トップページの画像取得")
+	public void testSelenium() throws Exception {
+		driver.get("http://localhost:8080/lms/");
+		assertEquals("ログイン | LMS", driver.getTitle());
+		File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		Files.copy(file.toPath(), Paths.get("./evidence/Case01_01_capture.png"));
 	}
 
 }

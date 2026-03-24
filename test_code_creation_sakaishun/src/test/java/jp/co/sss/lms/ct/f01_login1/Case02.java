@@ -1,9 +1,15 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +22,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -68,14 +83,20 @@ public class Case02 {
 	@InjectMocks
 	private LoginController loginController;
 
+	private WebDriver driver;
+
 	@BeforeEach
 	public void setup() {
 		mockMvc = MockMvcBuilders.standaloneSetup(loginController).build();
+		ChromeOptions options = new ChromeOptions();
+		driver = new ChromeDriver(options);
 	}
 
 	@AfterEach
 	public void tearDown() {
-
+		if (driver != null) {
+			driver.quit();
+		}
 	}
 
 	@Test
@@ -106,6 +127,16 @@ public class Case02 {
 
 	@Test
 	@Order(2)
+	@DisplayName("Case02_01_トップページの画像取得")
+	public void testSeleniumCase02_01() throws Exception {
+		driver.get("http://localhost:8080/lms/");
+		assertEquals("ログイン | LMS", driver.getTitle());
+		File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		Files.copy(file.toPath(), Paths.get("./evidence/Case02_01_capture.png"));
+	}
+
+	@Test
+	@Order(3)
 	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
 	void test02() {
 		String userId = "StudentAA100";
@@ -124,6 +155,29 @@ public class Case02 {
 			fail(new Object() {
 			}.getClass().getEnclosingMethod().getName());
 		}
+	}
+
+	@Test
+	@Order(4)
+	@DisplayName("Case02_02_トップページの画像取得")
+	public void testSeleniumCase02_02() throws Exception {
+		driver.get("http://localhost:8080/lms/");
+		final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebElement loginIdInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loginId")));
+		loginIdInput.clear();
+		loginIdInput.sendKeys("StudentAA100");
+
+		WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+		passwordInput.clear();
+		passwordInput.sendKeys("StudentAA01");
+
+		WebElement loginCrick = wait
+				.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[value='ログイン']")));
+		loginCrick.click();
+
+		assertEquals("ログイン | LMS", driver.getTitle());
+		File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		Files.copy(file.toPath(), Paths.get("./evidence/Case02_02_capture.png"));
 	}
 
 }

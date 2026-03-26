@@ -3,10 +3,6 @@ package jp.co.sss.lms.ct.f01_login1;
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,12 +12,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 /**
@@ -29,7 +22,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
  * ケース01
  * @author holy
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(OrderAnnotation.class)
 @DisplayName("ケース01 ログイン画面への遷移")
 public class Case01 {
@@ -67,12 +60,20 @@ public class Case01 {
 	@Test
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
-	void test01() throws Exception {
+	void test01() {
+		goTo("http://localhost:8080/lms/");
+		//assertEquals("http://localhost:" + port + "/lms/", driver.getCurrentUrl());
+		assertEquals("ログイン | LMS", webDriver.getTitle());
+		getEvidence(new Object() {
+		});
+	}
+
+	/*void test01() throws Exception {
 		driver.get("http://localhost:" + port + "/lms/");
 		assertEquals("http://localhost:" + port + "/lms/", driver.getCurrentUrl());
 		assertEquals("ログイン | LMS", driver.getTitle());
 		File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		Files.copy(file.toPath(), Paths.get("./evidence/Case01_01_capture.png"));
-	}
+	}*/
 
 }

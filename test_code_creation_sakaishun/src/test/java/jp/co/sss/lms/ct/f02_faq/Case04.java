@@ -38,6 +38,8 @@ public class Case04 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
+
+		//ログイン画面へ遷移後、ページタイトルを検証
 		goTo("http://localhost:8080/lms/");
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		getEvidence(new Object() {
@@ -49,24 +51,28 @@ public class Case04 {
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
 
+		//初回ログイン済みの「ID：StudentAA02、password：studentAA02」の値を代入
 		String userId = "StudentAA02";
 		String password = "studentAA02";
 
+		//ID入力欄クリア後、入力
 		WebElement loginIdInput = webDriver.findElement(By.id("loginId"));
 		loginIdInput.clear();
 		loginIdInput.sendKeys(userId);
 
+		//password入力欄クリア後、入力
 		WebElement passwordInput = webDriver.findElement(By.id("password"));
 		passwordInput.clear();
 		passwordInput.sendKeys(password);
 
+		//ID、password入力後、ログインボタンを押下
 		WebElement loginCrick = webDriver.findElement(By.cssSelector("input[value='ログイン']"));
 		loginCrick.click();
 
+		//現在のアドレス欄のURLとページタイトルを取得し、コース詳細画面のURL・ページタイトルと比較
 		String currentUrl = webDriver.getCurrentUrl();
 		assertTrue(currentUrl.contains("/lms/course/detail"));
 		assertEquals("コース詳細 | LMS", webDriver.getTitle());
-
 		getEvidence(new Object() {
 		});
 	}
@@ -75,16 +81,19 @@ public class Case04 {
 	@Order(3)
 	@DisplayName("テスト03 上部メニューの「ヘルプ」リンクからヘルプ画面に遷移")
 	void test03() {
+
+		//上部メニューの「機能」ボタンを押下
 		WebElement dropDownToggleCrick = webDriver.findElement(By.className("dropdown-toggle"));
 		dropDownToggleCrick.click();
 
+		//「機能」メニュー内の「ヘルプ」リンクをクリック
 		WebElement dropDownToggleHelpCrick = webDriver.findElement(By.cssSelector("a[href='/lms/help']"));
 		dropDownToggleHelpCrick.click();
 
+		//現在のアドレス欄のURLとページタイトルを取得し、ヘルプ画面のURL・ページタイトルと比較
 		String currentUrl = webDriver.getCurrentUrl();
 		assertTrue(currentUrl.contains("/lms/help"));
 		assertEquals("ヘルプ | LMS", webDriver.getTitle());
-
 		getEvidence(new Object() {
 		});
 	}
@@ -93,16 +102,19 @@ public class Case04 {
 	@Order(4)
 	@DisplayName("テスト04 「よくある質問」リンクからよくある質問画面を別タブに開く")
 	void test04() {
+
+		//ヘルプ画面内の「よくある質問」リンクをクリック
 		WebElement lmsFaqCrick = webDriver.findElement(By.cssSelector("a[href='/lms/faq']"));
 		lmsFaqCrick.click();
 
+		//「よくある質問」リンククリック後の新規タブへフォーカス
 		Object[] windowHandles = webDriver.getWindowHandles().toArray();
 		webDriver.switchTo().window((String) windowHandles[1]);
 
+		//現在のアドレス欄のURLとページタイトルを取得し、よくある質問画面のURL・ページタイトルと比較
 		String currentUrl = webDriver.getCurrentUrl();
 		assertTrue(currentUrl.contains("/lms/faq"));
 		assertEquals("よくある質問 | LMS", webDriver.getTitle());
-
 		getEvidence(new Object() {
 		});
 	}

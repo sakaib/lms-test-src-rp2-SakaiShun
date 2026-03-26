@@ -38,6 +38,8 @@ public class Case03 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
+
+		//ログイン画面へ遷移後、ページタイトルを検証
 		goTo("http://localhost:8080/lms/");
 		assertEquals("ログイン | LMS", webDriver.getTitle());
 		getEvidence(new Object() {
@@ -49,24 +51,28 @@ public class Case03 {
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
 
+		//初回ログイン済みの「ID：StudentAA02、password：studentAA02」の値を代入
 		String userId = "StudentAA02";
 		String password = "studentAA02";
 
+		//ID入力欄クリア後、入力
 		WebElement loginIdInput = webDriver.findElement(By.id("loginId"));
 		loginIdInput.clear();
 		loginIdInput.sendKeys(userId);
 
+		//password入力欄クリア後、入力
 		WebElement passwordInput = webDriver.findElement(By.id("password"));
 		passwordInput.clear();
 		passwordInput.sendKeys(password);
 
+		//ID、password入力後、ログインボタンを押下
 		WebElement loginCrick = webDriver.findElement(By.cssSelector("input[value='ログイン']"));
 		loginCrick.click();
 
+		//現在のアドレス欄のURLとページタイトルを取得し、コース詳細画面のURL・ページタイトルと比較
 		String currentUrl = webDriver.getCurrentUrl();
 		assertTrue(currentUrl.contains("/lms/course/detail"));
 		assertEquals("コース詳細 | LMS", webDriver.getTitle());
-
 		getEvidence(new Object() {
 		});
 	}

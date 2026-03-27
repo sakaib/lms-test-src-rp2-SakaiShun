@@ -159,8 +159,10 @@ public class Case05 {
 		WebElement clearCrick = webDriver.findElement(By.cssSelector("input[value='クリア']"));
 		clearCrick.click();
 
-		//よくある質問画面から遷移していないことを確認
-		assertEquals("よくある質問 | LMS", webDriver.getTitle());
+		//キーワード検索の入力欄の内容を取得し、空であることを確認
+		WebElement keywordInput = webDriver.findElement(By.id("form"));
+		String keywordInputText = keywordInput.getAttribute("value");
+		assertEquals("", keywordInputText);
 
 		getEvidence(new Object() {
 		});

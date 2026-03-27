@@ -151,8 +151,11 @@ public class Case06 {
 			answerCrick.click();
 		}
 
-		//よくある質問画面から遷移していないことを確認
-		assertEquals("よくある質問 | LMS", webDriver.getTitle());
+		//回答のテキストを取得し、質問をクリックできているか確認
+		WebElement TextCheck = webDriver
+				.findElement(By
+						.xpath("//span[contains(text(),'受講者の退職や解雇等')]"));
+		assertTrue(TextCheck.getText().contains("受講者の退職や解雇等、やむを得ない事情による途中終了に関してなど、事情をお伺いした上で、協議という形を取らせて頂きます。"));
 
 		//検索結果が見えるようにスクロールしてキャプチャ
 		scrollTo("450");
